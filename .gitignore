@@ -1,0 +1,6 @@
+homelab
+*extra-vars*.yml*
+todo.txt
+*.ini
+*homelab-xsoar*
+*xsoar-elastic*

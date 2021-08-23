@@ -1,0 +1,30 @@
+---
+# tasks file for homelab-common
+- name: Configuration for Debian based systems
+  include_tasks: debian-config.yml
+  when: 
+  - ansible_distribution == "Debian"
+
+- name: Configuration for Ubuntu based systems
+  include_tasks: ubuntu-config.yml
+  when: 
+  - ansible_distribution == "Ubuntu"
+
+- name: Configuration for CentOS/Rocky based systems
+  include_tasks: centos-config.yml
+  when: 
+  - ansible_distribution == "CentOS" or ansible_distribution == "Rocky" or ansible_distribution == "RedHat" or ansible_distribution == "AlmaLinux"
+
+- name: Set authorized key taken from file
+  ansible.posix.authorized_key:
+    user: "{{ login_user }}"
+    state: present
+    key: "{{ lookup('file', '/home/{{ local_user }}/.ssh/id_rsa.pub') }}"
+
+- name: Add login_user to no password for sudo
+  ansible.builtin.template:
+    src: sudoers-template.j2
+    dest: /etc/sudoers.d/{{ login_user }}
+    owner: root
+    group: root
+    mode: '0644'

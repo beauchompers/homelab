@@ -1,0 +1,22 @@
+---
+# tasks file for homelab-nfs
+- name: Install NFS on Ubuntu/Debian
+  include_tasks: ubuntu.yml
+  when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
+
+- name: Install NFS on CentOS/Rocky
+  include_tasks: centos.yml
+  when: ansible_distribution == "CentOS" or ansible_distribution == "Rocky" or ansible_distribution == "RedHat" or ansible_distribution == "AlmaLinux"
+
+- name: Ensure directory for NFS volume exists
+  file:
+    path: "{{ nfs_share }}"
+    state: directory
+
+- name: Mount a NFS volume
+  ansible.posix.mount:
+    src: "{{ nfs_server }}:{{ nfs_server_share}}"
+    path: "{{ nfs_share}}"
+    opts: rw,sync,hard,intr
+    state: mounted
+    fstype: nfs

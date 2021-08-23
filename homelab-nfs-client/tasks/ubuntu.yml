@@ -1,0 +1,5 @@
+---
+- name: Install NFS Packages
+  ansible.builtin.apt:
+    name: ['nfs-common']
+    update_cache: yes

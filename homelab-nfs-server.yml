@@ -1,0 +1,15 @@
+---
+- hosts: nfs
+  become: yes
+  tasks:
+    - name: Setup NFS Server
+      import_role:
+        name: homelab-nfs-server
+
+- hosts: nfs_client
+  become: yes
+  tasks:
+    - name: Setup NFS Clients
+      import_role:
+        name: homelab-nfs-client
+

@@ -1,0 +1,11 @@
+---
+- hosts: elastic
+  become: yes
+  tasks:
+    - name: Install Docker
+      import_role:
+        name: homelab-containers
+
+    - name: Setup Elasticsearch Node with Docker Compose
+      import_role:
+        name: homelab-elasticsearch-docker

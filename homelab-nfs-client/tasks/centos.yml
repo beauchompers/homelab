@@ -1,0 +1,4 @@
+---
+- name: Install NFS Packages
+  ansible.builtin.yum:
+    name: ['nfs-utils']

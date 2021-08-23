@@ -1,0 +1,10 @@
+---
+- name: Install packages
+  ansible.builtin.apt:
+    name: ['sudo','qemu-guest-agent','python3']
+    update_cache: yes
+
+- name: Update all packages to their latest version
+  ansible.builtin.apt:
+    name: "*"
+    state: latest

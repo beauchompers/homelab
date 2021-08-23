@@ -1,0 +1,13 @@
+---
+- name: Install NFS Packages - Ubuntu/Debian
+  ansible.builtin.apt:
+    name: ['nfs-kernel-server','nfs-common']
+    update_cache: yes
+
+- name: Enable and start NFS services
+  ansible.builtin.systemd:
+    name: nfs-kernel-server
+    enabled: yes
+    state: started
+  when:
+  - not ansible_check_mode

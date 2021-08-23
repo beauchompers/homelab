@@ -1,0 +1,3 @@
+---
+# defaults file for homelab-nfs
+nfs_exports: ["/nfsshare *(rw,sync,no_root_squash,no_all_squash)"]

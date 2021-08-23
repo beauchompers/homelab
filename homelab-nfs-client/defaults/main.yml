@@ -1,0 +1,5 @@
+---
+# defaults file for homelab-nfs
+nfs_share: ""
+nfs_server_share: ""
+nfs_server: ""

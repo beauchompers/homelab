@@ -1,0 +1,24 @@
+---
+- name: Setting container_engine_type fact
+  set_fact: container_engine_type="docker"
+  
+- name: Install prerequisites for Docker
+  ansible.builtin.yum:
+    name: ['yum-utils', 'device-mapper-persistent-data', 'lvm2', 'python3']
+
+- name: Add Docker repository
+  shell: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo --enable
+  args:
+    creates: /etc/yum.repos.d/docker-ce.repo
+
+- name: Install Docker CE
+  ansible.builtin.yum:
+    name: ['docker-ce', 'docker-ce-cli', 'containerd.io']
+
+- name: Start Docker Service
+  ansible.builtin.systemd:
+    name: docker
+    enabled: yes
+    daemon_reload: yes
+    state: started
+  when: not ansible_check_mode

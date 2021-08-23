@@ -1,0 +1,45 @@
+---
+# tasks file for homelab-elasticsearch-docker
+
+- name: Set vm.map_map_count for cluster
+  ansible.posix.sysctl:
+    name: vm.max_map_count
+    value: 262144
+    state: present
+  when: cluster_type != "single"
+
+- name: Copy Docker Compose Project
+  ansible.builtin.copy:
+    src: elasticsearch
+    dest: "/home/{{ ansible_user }}"
+
+- name: Copy Single Node template for Elastic w/TLS 
+  ansible.builtin.template:
+    src: elastic-docker-tls.yml.j2
+    dest: "/home/{{ ansible_user }}/elasticsearch/elastic-docker-tls.yml"
+  when: cluster_type == "single"
+
+- name: Copy Cluster template for Elastic w/TLS
+  ansible.builtin.template:
+    src: elastic-docker-tls-cluster.yml.j2
+    dest: "/home/{{ ansible_user }}/elasticsearch/elastic-docker-tls.yml"
+  when: cluster_type != "single"
+
+- name: Run docker compose with create-certs
+  ansible.builtin.command:
+    cmd: "docker-compose -f create-certs.yml run --rm create_certs"
+    creates: "/home/{{ ansible_user }}/elastic.txt"
+    chdir: "/home/{{ ansible_user }}/elasticsearch"
+  when: not ansible_check_mode
+
+- name: Run docker compose to bring up Elasticsearch w/Kibana
+  ansible.builtin.command:
+    cmd: "docker-compose -f elastic-docker-tls.yml up -d"
+    creates: "/home/{{ ansible_user }}/elastic.txt"
+    chdir: "/home/{{ ansible_user }}/elasticsearch"
+  when: not ansible_check_mode
+
+- name: Create ES file to stop commands above
+  ansible.builtin.file:
+    path: "/home/{{ ansible_user }}/elastic.txt"
+    state: touch

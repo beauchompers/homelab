@@ -1,0 +1,25 @@
+---
+- hosts: elastic
+  become: yes
+  tasks:
+    - name: Install Docker
+      import_role:
+        name: homelab-containers
+
+    - name: Setup Elasticsearch Node with Docker Compose
+      import_role:
+        name: homelab-elasticsearch-docker
+        
+- hosts: nfs
+  become: yes
+  tasks:
+    - name: Setup NFS Server
+      import_role:
+        name: homelab-nfs-server
+
+- hosts: nfs_client
+  become: yes
+  tasks:
+    - name: Setup NFS Clients
+      import_role:
+        name: homelab-nfs-client

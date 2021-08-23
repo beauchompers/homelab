@@ -1,0 +1,13 @@
+---
+- hosts: common
+  become: yes
+  tasks:
+    - name: Add Common Configuration
+      import_role:
+        name: homelab-common
+    
+    - name: Shutdown VM
+      ansible.builtin.command:
+        cmd: "shutdown -h +1"
+      tags:
+        - shutdown

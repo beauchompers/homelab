@@ -1,0 +1,15 @@
+---
+- name: Install packages
+  ansible.builtin.yum:
+    name: ['sudo','qemu-guest-agent','python3']
+
+- name: Upgrade all packages
+  ansible.builtin.yum:
+    name: '*'
+    state: latest
+
+- name: Stop and disable firewalld
+  ansible.builtin.systemd:
+    name: firewalld
+    enabled: no
+    state: stopped

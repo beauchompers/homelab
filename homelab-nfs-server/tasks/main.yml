@@ -1,0 +1,24 @@
+---
+# tasks file for homelab-nfs
+- name: Install NFS on Ubuntu/Debian
+  include_tasks: ubuntu.yml
+  when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
+
+- name: Install NFS on CentOS/Rocky
+  include_tasks: centos.yml
+  when: ansible_distribution == "CentOS" or ansible_distribution == "Rocky"
+
+- name: Ensure directories to export exist
+  file:
+    path: "{{ item.strip().split()[0] }}"
+    state: directory
+  with_items: "{{ nfs_exports }}"
+
+- name: Copy exports file.
+  template:
+    src: exports.j2
+    dest: /etc/exports
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload nfs

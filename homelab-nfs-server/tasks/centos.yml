@@ -1,0 +1,20 @@
+---
+- name: Install NFS Packages - CentOS/Rocky
+  ansible.builtin.yum:
+    name: ['nfs-utils','rpcbind']
+
+- name: Enable and start RPCBind services
+  ansible.builtin.systemd:
+    name: rpcbind
+    enabled: yes
+    state: started
+  when:
+  - not ansible_check_mode
+
+- name: Enable and start NFS services
+  ansible.builtin.systemd:
+    name: nfs-server
+    enabled: yes
+    state: started
+  when:
+  - not ansible_check_mode

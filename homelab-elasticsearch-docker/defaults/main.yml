@@ -1,0 +1,5 @@
+---
+# defaults file for homelab-elasticsearch-docker
+elastic_password: "changeme"
+cluster_type: "single"
+elastic_memory: "512"

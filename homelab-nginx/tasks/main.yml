@@ -1,0 +1,22 @@
+---
+- name: Install NGINX
+  ansible.builtin.apt:
+    name: ['nginx']
+    update_cache: yes
+
+- name: Copy certificate and key over
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/etc/nginx/{{ item }}"
+  with_items:
+  - "{{ cert_file }}"
+  - "{{ key_file }}"
+  notify:
+  - restart nginx
+
+- name: Copy nginx configuration template
+  ansible.builtin.template:
+    src: "{{ conf_name }}.j2"
+    dest: "/etc/nginx/conf.d/{{ conf_name }}"
+  notify:
+  - restart nginx

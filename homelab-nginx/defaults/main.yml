@@ -1,0 +1,7 @@
+---
+# defaults file for homelab-nginx
+conf_name: ""
+server_group_name: ""
+server_group: ""
+cert_file: ""
+key_file: ""

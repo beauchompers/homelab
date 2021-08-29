@@ -13,6 +13,7 @@ The following roles are in this repo.
 | homelab-elasticsearch-docker | Role to install an Elasticsearch cluster using Docker, either cluster (3), or single node |
 | homelab-nfs-client | Role to install NFS and mount a directory on the target servers | 
 | homelab-nfs-server | Role to install an NFS server to serve the above ones! |
+| homelab-nginx | Role to install an NGINX load balancer | 
 
 ## Scripts
 

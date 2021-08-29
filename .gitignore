@@ -4,3 +4,6 @@ todo.txt
 *.ini
 *homelab-xsoar*
 *xsoar-elastic*
+*.key
+*.pem
+*.crt

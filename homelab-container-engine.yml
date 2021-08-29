@@ -1,0 +1,7 @@
+---
+- hosts: containers
+  become: yes
+  tasks:
+    - name: Install Docker
+      import_role:
+        name: homelab-containers

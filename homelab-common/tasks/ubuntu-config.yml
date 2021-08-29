@@ -1,8 +1,14 @@
 ---
-- name: Install packages
+- name: Install sudo and python3 packages
   ansible.builtin.apt:
-    name: ['sudo','qemu-guest-agent','python3']
+    name: ['sudo','python3']
     update_cache: yes
+
+- name: Install qemu-guest-agent
+  ansible.builtin.apt:
+    name: ['qemu-guest-agent']
+  when:
+  - "'readyberry' not in ansible_hostname"
 
 - name: Update all packages to their latest version
   ansible.builtin.apt:

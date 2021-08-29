@@ -1,7 +1,10 @@
+#! /usr/bin/python3
+
 from time import sleep
 import requests
 import argparse
 import configparser
+import sys
 
 urllib3 = requests.packages.urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -106,8 +109,9 @@ def stop_vm(nodes, csrf, ticket):
 # MAIN
 
 # Read config file
+# Config file needs to be in same dir as the script
 config = configparser.ConfigParser()
-config.read('proxmox-config.ini')
+config.read(f'{sys.path[0]}/proxmox-config.ini')
 
 username = config["DEFAULT"]["username"]
 password = config["DEFAULT"]["password"]

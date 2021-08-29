@@ -1,0 +1,53 @@
+upstream {{ server_group }} {
+ip_hash;
+{% for host in groups['xsoar_es_ha'] %}
+server {{host}}:443;
+{% endfor %}
+}
+
+# Uncomment to redirect http to https (optional)
+# server {
+#     listen 80;
+#     return 301 https://$host$request_uri;
+# }
+
+server {
+# Change the port if you want NGINX to listen on a different port
+listen 443;
+
+ssl_certificate           /etc/nginx/{{ cert_file }};
+ssl_certificate_key       /etc/nginx/{{ key_file }};
+
+ssl on;
+ssl_session_cache  builtin:1000  shared:SSL:10m;
+ssl_protocols  TLSv1.2;
+ssl_ciphers HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;
+ssl_prefer_server_ciphers on;
+
+access_log            /var/log/nginx/demisto.access.log;
+
+location / {
+
+proxy_set_header        Host $host;
+proxy_set_header        X-Real-IP $remote_addr;
+proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header        X-Forwarded-Proto $scheme;
+
+proxy_pass          https://{{ server_group }};
+proxy_read_timeout  90;
+}
+
+# Note the regex prefix '^(/acc_\w+)?' is needed for multi-tenant environments
+# In non MT envs you can use the following: 
+location ~ /(websocket|d1ws|d2ws) {
+proxy_pass https://{{ server_group }};
+proxy_http_version 1.1;
+proxy_set_header Upgrade $http_upgrade;
+proxy_set_header Connection "upgrade";
+proxy_set_header Host $host;
+proxy_set_header Origin "";
+proxy_set_header X-Real-IP $remote_addr;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto $scheme;
+}
+}

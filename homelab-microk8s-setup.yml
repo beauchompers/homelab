@@ -1,0 +1,22 @@
+---
+- hosts: berrys
+  become: yes
+  tasks:  
+    - name: Enable container features
+      replace:
+        path: /boot/firmware/cmdline.txt
+        regexp: '^([\w](?!.*\b{{ item }}\b).*)$'
+        replace: '\1 {{ item }}'
+      register: container_features
+      with_items:
+      - "cgroup_memory=1"
+      - "cgroup_enable=memory"
+
+    - name: Reboot after above changes
+      reboot:
+        reboot_timeout: 180
+      when: container_features.changed
+
+    - name: Install Docker
+      import_role:
+        name: homelab-containers

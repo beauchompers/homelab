@@ -3,6 +3,14 @@
 #   ansible.builtin.debug:
 #     var: ansible_facts
 
+- name: Set amd64 when architecture is x86_64
+  set_fact: repo_arch="amd64"
+  when: ansible_architecture == "x86_64"
+
+- name: Set amd64 when architecture is aarch64
+  set_fact: repo_arch="arm64"
+  when: ansible_architecture == "aarch64"
+
 - name: Install Docker on Ubuntu
   include_tasks: ubuntu.yml
   when: ansible_distribution == "Ubuntu"

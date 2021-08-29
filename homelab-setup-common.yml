@@ -8,6 +8,6 @@
     
     - name: Shutdown VM
       ansible.builtin.command:
-        cmd: "shutdown -h +1"
+        cmd: "shutdown -r +1"
       tags:
         - shutdown

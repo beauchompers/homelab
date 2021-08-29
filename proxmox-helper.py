@@ -122,10 +122,10 @@ quick_configs = config["QUICK_SETUPS"]["quick_configs"].split(",")
 
 # proxmox-helper args
 arg_parser = argparse.ArgumentParser(description='Homelab Proxmox Helper, because clicking is not efficient')
-arg_parser.add_argument('--nodes', dest='nodes', help='List of Node names, example --nodes=node1,node2,node3')
-arg_parser.add_argument('--action', dest='action', choices=['start','stop','rollback','rollbackall','stopall'], default='rollback', help='Actions to take on the nodes, if rollback it will rollback the started vms to the provided snapshot.')
-arg_parser.add_argument('--snapshot', dest='snapshot', default=snapshot, help='Which snapshot to rollback the nodes to.')
-arg_parser.add_argument('--quick', dest='quick', choices=quick_configs, default=None, help='list of quick setups from the config file')
+arg_parser.add_argument('-n','--nodes', dest='nodes', help='List of Node names, example --nodes=node1,node2,node3')
+arg_parser.add_argument('-a','--action', dest='action', choices=['start','stop','rollback','rollbackall','stopall'], default='rollback', help='Actions to take on the nodes, if rollback it will rollback the started vms to the provided snapshot.')
+arg_parser.add_argument('-s','--snapshot', dest='snapshot', default=snapshot, help='Which snapshot to rollback the nodes to.')
+arg_parser.add_argument('-q','--quick', dest='quick', choices=quick_configs, default=None, help='list of quick setups from the config file')
 args = arg_parser.parse_args()
 
 # authenticate to api
@@ -165,8 +165,10 @@ if args.quick:
     print(f"Started: {started_vms}")
 
 if args.action == "rollback" and not args.quick:
-    # get running nodes
-    node_ids = [ x.get("id") for x in get_running(all_nodes)]
+    
+    if not args.nodes:
+        # get running nodes
+        node_ids = [ x.get("id") for x in get_running(all_nodes)]
     
     # rollback
     snapshots = rollback_snapshot(node_ids, args.snapshot, csrf, ticket)

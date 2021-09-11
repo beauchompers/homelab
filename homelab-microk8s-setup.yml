@@ -1,5 +1,6 @@
 ---
 - hosts: berrys
+  serial: 1
   become: yes
   tasks:  
     - name: Enable container features
@@ -20,3 +21,7 @@
     - name: Install Docker
       import_role:
         name: homelab-containers
+
+    - name: Install MicroK8s
+      import_role:
+        name: homelab-microk8s

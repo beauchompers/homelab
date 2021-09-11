@@ -1,0 +1,51 @@
+---
+- name: Install Packages
+  ansible.builtin.apt:
+    name: ['iptables-persistent']
+    update_cache: yes
+  when: not ansible_check_mode
+
+- name: Set IPTables 
+  ansible.builtin.command:
+    cmd: "iptables -P FORWARD ACCEPT"
+  when: not ansible_check_mode
+
+- name: Install microk8s with option --classic
+  community.general.snap:
+    name: microk8s
+    classic: yes
+  register: microk8s
+
+- name: Pause for K8s
+  pause:
+    minutes: 3
+  when: microk8s.changed
+
+- name: Get cluster status
+  ansible.builtin.command:
+    cmd: "microk8s.kubectl get node"
+  register: cluster_status
+  delegate_to:  "{{ ansible_play_hosts_all[0] }}"
+
+- name: Generate token on first node
+  ansible.builtin.command:
+    cmd: "microk8s.add-node"
+  register: token
+  delegate_to:  "{{ ansible_play_hosts_all[0] }}"
+  when: 
+  - inventory_hostname != ansible_play_hosts_all[0]
+  - cluster_status.stdout_lines | select('search', inventory_hostname) | list | count == 0
+
+- name: Add node to cluster
+  ansible.builtin.command:
+    cmd: "{{ token.stdout_lines[1] }}"
+  when:
+  - inventory_hostname != ansible_play_hosts_all[0]
+  - cluster_status.stdout_lines | select('search', inventory_hostname) | list | count == 0 
+
+- name: Configure Docker registry
+  ansible.builtin.template:
+    src: "daemon.json.j2"
+    dest: "/etc/docker/daemon.json"
+  notify:
+  - Restart Docker

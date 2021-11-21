@@ -7,3 +7,4 @@ todo.txt
 *.key
 *.pem
 *.crt
+elastic3.yml.j2

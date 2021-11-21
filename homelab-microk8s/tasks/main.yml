@@ -3,6 +3,8 @@
   ansible.builtin.apt:
     name: ['iptables-persistent']
     update_cache: yes
+  retries: 2
+  delay: 10
   when: not ansible_check_mode
 
 - name: Set IPTables 

@@ -15,8 +15,8 @@
 
 - name: Mount a NFS volume
   ansible.posix.mount:
-    src: "{{ nfs_server }}:{{ nfs_server_share}}"
-    path: "{{ nfs_share}}"
+    src: "{{ nfs_server }}:{{ nfs_server_share }}"
+    path: "{{ nfs_share }}"
     opts: rw,sync,hard,intr
     state: mounted
     fstype: nfs

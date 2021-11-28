@@ -149,7 +149,7 @@ if args.quick:
     # stop vms
     stopped_vms = stop_vm(node_ids, csrf, ticket)
     print(f"Stopped: {stopped_vms}")
-    sleep(10)
+    sleep(15)
     
     nodes = config["QUICK_SETUPS"][args.quick].split(",")
     node_ids = [x.get("id") for x in get_node_ids(all_nodes,nodes)]
@@ -157,11 +157,11 @@ if args.quick:
     # rollback
     snapshots = rollback_snapshot(node_ids, args.snapshot, csrf, ticket)
     print(f"Rolled back: {snapshots}")
-    sleep(10)
+    sleep(15)
 
     # start vms after rollback
     started_vms = start_vm(node_ids, csrf, ticket)
-    sleep(10)
+    sleep(30)
     print(f"Started: {started_vms}")
 
 if args.action == "rollback" and not args.quick:

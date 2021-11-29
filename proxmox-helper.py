@@ -43,6 +43,8 @@ def proxmox_request(method, csrf_token, ticket, uri):
         res = requests.get(f"{base_url}/{uri}", headers=headers, cookies=cookies, verify=False)
     if method == "POST":
         res = requests.post(f"{base_url}/{uri}", headers=headers, cookies=cookies, verify=False)
+    if method == "DELETE":
+        res = requests.delete(f"{base_url}/{uri}", headers=headers, cookies=cookies, verify=False)
     return res.json()
 
 
@@ -106,6 +108,32 @@ def stop_vm(nodes, csrf, ticket):
         results.append(node)
     return results
 
+def snapshot_vm(nodes, snapshot, csrf, ticket):
+    """
+    Creates a snapshot of the node
+    # POST /api2/json/nodes/{nodename}/qemu/{node}/snapshot?snapname={snapshot}
+    """
+ 
+    results = []
+    for node in nodes:
+        res = proxmox_request("POST", csrf, ticket, f"/nodes/{nodename}/qemu/{node}/snapshot?snapname={snapshot}")
+        results.append(node)
+        sleep(10)
+    return results
+
+def delete_snapshot_vm(nodes, snapshot, csrf, ticket):
+    """
+    Deletes a snapshot of the node
+    # DELETE /api2/json/nodes/{nodename}/qemu/{node}/snapshot/{snapshot}
+    """
+ 
+    results = []
+    for node in nodes:
+        res = proxmox_request("DELETE", csrf, ticket, f"/nodes/{nodename}/qemu/{node}/snapshot/{snapshot}")
+        results.append(node)
+        sleep(10)
+    return results
+
 # MAIN
 
 # Read config file
@@ -123,8 +151,8 @@ quick_configs = config["QUICK_SETUPS"]["quick_configs"].split(",")
 # proxmox-helper args
 arg_parser = argparse.ArgumentParser(description='Homelab Proxmox Helper, because clicking is not efficient')
 arg_parser.add_argument('-n','--nodes', dest='nodes', help='List of Node names, example --nodes=node1,node2,node3')
-arg_parser.add_argument('-a','--action', dest='action', choices=['start','stop','rollback','rollbackall','stopall'], default='rollback', help='Actions to take on the nodes, if rollback it will rollback the started vms to the provided snapshot.')
-arg_parser.add_argument('-s','--snapshot', dest='snapshot', default=snapshot, help='Which snapshot to rollback the nodes to.')
+arg_parser.add_argument('-a','--action', dest='action', choices=['start','stop','rollback','rollbackall','startall','stopall','snapshot','resnapshotall'], default='rollback', help='Actions to take on the nodes, if rollback it will rollback the started vms to the provided snapshot.')
+arg_parser.add_argument('-s','--snapshot', dest='snapshot', default=snapshot, help='Which snapshot to rollback the nodes to, or to take.')
 arg_parser.add_argument('-q','--quick', dest='quick', choices=quick_configs, default=None, help='list of quick setups from the config file')
 args = arg_parser.parse_args()
 
@@ -149,7 +177,7 @@ if args.quick:
     # stop vms
     stopped_vms = stop_vm(node_ids, csrf, ticket)
     print(f"Stopped: {stopped_vms}")
-    sleep(15)
+    sleep(20)
     
     nodes = config["QUICK_SETUPS"][args.quick].split(",")
     node_ids = [x.get("id") for x in get_node_ids(all_nodes,nodes)]
@@ -157,7 +185,7 @@ if args.quick:
     # rollback
     snapshots = rollback_snapshot(node_ids, args.snapshot, csrf, ticket)
     print(f"Rolled back: {snapshots}")
-    sleep(15)
+    sleep(20)
 
     # start vms after rollback
     started_vms = start_vm(node_ids, csrf, ticket)
@@ -202,6 +230,14 @@ if args.action == "start" or args.action == "stop":
         # stop vms
         stopped_vms = stop_vm(node_ids, csrf, ticket)
         print(f"Stopped: {stopped_vms}") 
+
+if args.action == "startall" and not args.quick:
+    # get all nodes
+    node_ids = [ x.get("vmid") for x in all_nodes ]
+    
+    # start vms
+    started_vms = start_vm(node_ids, csrf, ticket)
+    print(f"Started: {started_vms}")
     
 if args.action == "stopall":
     # get running nodes
@@ -210,4 +246,42 @@ if args.action == "stopall":
     # stop vms
     stopped_vms = stop_vm(node_ids, csrf, ticket)
     print(f"Stopped: {stopped_vms}") 
+
+if args.action == "snapshot" and not args.quick:
+    
+    if args.snapshot == 'BaseConfig':
+        print("Please provide a snapshot name!")
+        sys.exit()
+    
+    if not args.nodes:
+        node_ids = [ x.get("vmid") for x in all_nodes ]
+    
+    # stop vms
+    stopped_vms = stop_vm(node_ids, csrf, ticket)
+    print(f"Stopped: {stopped_vms}") 
+    
+    # snapshot vms
+    snapshot_vms = snapshot_vm(node_ids, args.snapshot, csrf, ticket)
+    print(f"Snapshot {args.snapshot}: {stopped_vms}")
+    
+if args.action == "resnapshotall" and not args.quick:
+    
+    if not args.nodes:
+        node_ids = [ x.get("vmid") for x in all_nodes ]
+    
+    # stop vms
+    stopped_vms = stop_vm(node_ids, csrf, ticket)
+    print(f"Stopped: {stopped_vms}") 
+    sleep(30)
+    
+    # delete base config snapshot
+    delete_vm_snapshots = delete_snapshot_vm(node_ids, "BaseConfig", csrf, ticket)
+    print(f"Deleted BaseConfig: {delete_vm_snapshots}")
+    sleep(30)
+    
+    # snapshot vms
+    snapshot_vms = snapshot_vm(node_ids, "BaseConfig", csrf, ticket)
+    print(f"Snapshot {args.snapshot}: {snapshot_vms}")
+    
+    
     

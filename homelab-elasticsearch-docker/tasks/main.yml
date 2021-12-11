@@ -25,6 +25,11 @@
     dest: "/home/{{ ansible_user }}/elasticsearch/elastic-docker-tls.yml"
   when: cluster_type != "single"
 
+- name: Copy .env template 
+  ansible.builtin.template:
+    src: env.j2
+    dest: "/home/{{ ansible_user }}/elasticsearch/.env"
+
 - name: Run docker compose with create-certs
   ansible.builtin.command:
     cmd: "docker-compose -f create-certs.yml run --rm create_certs"

@@ -8,3 +8,4 @@ todo.txt
 *.pem
 *.crt
 elastic3.yml.j2
+*setup-berries.yml

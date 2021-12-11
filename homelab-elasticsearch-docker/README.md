@@ -15,10 +15,14 @@ elastic_password: "changeme"
 - Password for the elastic user (elastic is the username)
 
 cluster_type: "single | cluster"
-- Whether to create a single node cluster, or a 3 node cluster using Docker
+- Whether to create a single node cluster, or a 4 node cluster using Docker
+- Cluster is 3 nodes with all roles and one coordinating node, and kibana.
 
 elastic_memory: "512"
 - The Xms/Xmx memory for each container, increase based on your server specs
+
+elastic_version: "7.15.0"
+- The version of elastic to run for each container.
 
 Dependencies
 ------------

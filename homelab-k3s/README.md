@@ -1,7 +1,7 @@
 Role Name
 =========
 
-This role installs a microk8s kubernetes cluster.
+This role installs a k3s kubernetes cluster with a server and worker nodes. 
 
 Author Information
 ------------------

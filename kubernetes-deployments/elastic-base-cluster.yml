@@ -9,6 +9,8 @@ spec:
   - name: default
     config:
       node.roles: ["master", "data"]
+      http.max_content_length: 250mb
+      xpack.monitoring.collection.enabled: true
     podTemplate:
       metadata:
         labels:

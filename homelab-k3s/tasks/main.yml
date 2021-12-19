@@ -14,7 +14,7 @@
 
 - name: Install k3s on main node
   ansible.builtin.shell:
-    cmd: "curl -sfL https://get.k3s.io | sh -"
+    cmd: "curl -sfL https://get.k3s.io | sh -s - --docker"
     creates: "/usr/local/bin/k3s"
   when: 
   - inventory_hostname == ansible_play_hosts_all[0]
@@ -38,7 +38,7 @@
     
 - name: Install k3s on worker nodes
   ansible.builtin.shell:
-    cmd: "curl -sfL https://get.k3s.io | K3S_URL=https://{{ ansible_play_hosts_all[0] }}:6443 K3S_TOKEN={{ token.stdout_lines[0] }} sh -"
+    cmd: "curl -sfL https://get.k3s.io | K3S_URL=https://{{ ansible_play_hosts_all[0] }}:6443 K3S_TOKEN={{ token.stdout_lines[0] }} sh -s - --docker"
     creates: "/usr/local/bin/k3s"
   when: 
   - inventory_hostname != ansible_play_hosts_all[0]

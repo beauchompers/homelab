@@ -4,7 +4,7 @@ kind: Elasticsearch
 metadata:
   name: elasticsearch
 spec:
-  version: 7.15.0
+  version: 7.16.2
   nodeSets:
   - name: default
     config:
@@ -59,7 +59,7 @@ kind: Kibana
 metadata:
   name: kibana
 spec:
-  version: 7.15.0
+  version: 7.16.2
   count: 1
   elasticsearchRef:
     name: "elasticsearch"
@@ -83,14 +83,13 @@ spec:
             cpu: 1
 
 ---
-# metricbeat resources
 apiVersion: beat.k8s.elastic.co/v1beta1
 kind: Beat
 metadata:
   name: metricbeat
 spec:
   type: metricbeat
-  version: 7.15.0
+  version: 7.16.2
   elasticsearchRef:
     name: elasticsearch
   config:
@@ -206,7 +205,7 @@ roleRef:
 #   name: filebeat
 # spec:
 #   type: filebeat
-#   version: 7.15.0
+#   version: 7.16.2
 #   elasticsearchRef:
 #     name: elasticsearch
 #   kibanaRef:

@@ -1,0 +1,18 @@
+# example config file for my proxmox helper script.
+# provide details on the environment
+[DEFAULT]
+username = root@pam
+password = password
+base_url = https://proxmoxserver:8006/api2/json
+nodename = homelab
+snapshot = base
+ignore_nodes = ["123"]
+
+# list of quick setups to start and stop various vms
+# provide list of configs in quick configs for the args
+# for each config, provide a csv of the vm names
+[QUICK_SETUPS]
+quick_configs = one,two,three
+one = vm1
+two = vm1,vm2
+three = vm1,vm2,vm3

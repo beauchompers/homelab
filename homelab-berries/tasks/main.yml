@@ -1,0 +1,13 @@
+---
+# tasks file for homelab-berries
+- name: Copy netchcecker to /usr/local/bin
+  ansible.builtin.template:
+    src: netchecker.j2
+    dest: /usr/local/bin/netchecker.sh
+    mode: 0755
+
+- name: Create cronjob to run the netchecker script
+  ansible.builtin.cron:
+    name: "check network"
+    minute: "5"
+    job: "/usr/local/bin/netchecker.sh >> /dev/null 2>&1"

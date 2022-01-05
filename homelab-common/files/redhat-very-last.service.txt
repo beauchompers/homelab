@@ -1,0 +1,10 @@
+[Unit]
+Description=Very last service
+After=default.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/very-last
+
+[Install]
+WantedBy=default.target

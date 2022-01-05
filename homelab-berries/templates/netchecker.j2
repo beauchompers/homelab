@@ -1,0 +1,6 @@
+ping -c4 {{ ping_ip }} > /dev/null
+ 
+if [ $? != 0 ] 
+then
+  /sbin/shutdown -r now
+fi

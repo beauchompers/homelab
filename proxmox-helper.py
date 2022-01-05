@@ -146,6 +146,7 @@ password = config["DEFAULT"]["password"]
 base_url = config["DEFAULT"]["base_url"]
 nodename = config["DEFAULT"]["nodename"]
 snapshot = config["DEFAULT"]["snapshot"]
+ignore_nodes = config["DEFAULT"]["ignore_nodes"] # nodes to ignore
 quick_configs = config["QUICK_SETUPS"]["quick_configs"].split(",")
 
 # proxmox-helper args
@@ -165,14 +166,14 @@ all_nodes = proxmox_request("GET",csrf, ticket, f"/nodes/{nodename}/qemu")["data
 # check we got some nodes
 if args.nodes:
     nodes = args.nodes.split(",")
-    node_ids = [x.get("id") for x in get_node_ids(all_nodes,nodes)]
+    node_ids = [x.get("id") for x in get_node_ids(all_nodes,nodes) if x.get("id") not in ignore_nodes]
 else:
     nodes = None
 
 # quick config, rollback and start the selected nodes 
 if args.quick:
     # get running nodes
-    node_ids = [ x.get("id") for x in get_running(all_nodes)]
+    node_ids = [ x.get("id") for x in get_running(all_nodes) if x.get("id") not in ignore_nodes]
     
     # stop vms
     stopped_vms = stop_vm(node_ids, csrf, ticket)
@@ -180,7 +181,7 @@ if args.quick:
     sleep(20)
     
     nodes = config["QUICK_SETUPS"][args.quick].split(",")
-    node_ids = [x.get("id") for x in get_node_ids(all_nodes,nodes)]
+    node_ids = [x.get("id") for x in get_node_ids(all_nodes,nodes) if x.get("id") not in ignore_nodes]
     
     # rollback
     snapshots = rollback_snapshot(node_ids, args.snapshot, csrf, ticket)
@@ -196,7 +197,7 @@ if args.action == "rollback" and not args.quick:
     
     if not args.nodes:
         # get running nodes
-        node_ids = [ x.get("id") for x in get_running(all_nodes)]
+        node_ids = [ x.get("id") for x in get_running(all_nodes) if x.get("id") not in ignore_nodes]
     
     # rollback
     snapshots = rollback_snapshot(node_ids, args.snapshot, csrf, ticket)
@@ -210,7 +211,7 @@ if args.action == "rollback" and not args.quick:
 
 if args.action == "rollbackall" and not args.quick:
     # get running nodes
-    node_ids = [ x.get("vmid") for x in all_nodes ]
+    node_ids = [ x.get("vmid") for x in all_nodes if x.get("vmid") not in ignore_nodes]
     
     # rollback
     snapshots = rollback_snapshot(node_ids, args.snapshot, csrf, ticket)
@@ -233,7 +234,7 @@ if args.action == "start" or args.action == "stop":
 
 if args.action == "startall" and not args.quick:
     # get all nodes
-    node_ids = [ x.get("vmid") for x in all_nodes ]
+    node_ids = [ x.get("vmid") for x in all_nodes if x.get("wmid") not in ignore_nodes]
     
     # start vms
     started_vms = start_vm(node_ids, csrf, ticket)
@@ -241,7 +242,7 @@ if args.action == "startall" and not args.quick:
     
 if args.action == "stopall":
     # get running nodes
-    node_ids = [ x.get("id") for x in get_running(all_nodes)]
+    node_ids = [ x.get("id") for x in get_running(all_nodes) if x.get("id") not in ignore_nodes]
     
     # stop vms
     stopped_vms = stop_vm(node_ids, csrf, ticket)
@@ -254,7 +255,7 @@ if args.action == "snapshot" and not args.quick:
         sys.exit()
     
     if not args.nodes:
-        node_ids = [ x.get("vmid") for x in all_nodes ]
+        node_ids = [ x.get("vmid") for x in all_nodes if x.get("vmid") not in ignore_nodes]
     
     # stop vms
     stopped_vms = stop_vm(node_ids, csrf, ticket)
@@ -267,7 +268,7 @@ if args.action == "snapshot" and not args.quick:
 if args.action == "resnapshotall" and not args.quick:
     
     if not args.nodes:
-        node_ids = [ x.get("vmid") for x in all_nodes ]
+        node_ids = [ x.get("vmid") for x in all_nodes if x.get("vmid") not in ignore_nodes]
     
     # stop vms
     stopped_vms = stop_vm(node_ids, csrf, ticket)
@@ -282,6 +283,3 @@ if args.action == "resnapshotall" and not args.quick:
     # snapshot vms
     snapshot_vms = snapshot_vm(node_ids, "BaseConfig", csrf, ticket)
     print(f"Snapshot {args.snapshot}: {snapshot_vms}")
-    
-    
-    

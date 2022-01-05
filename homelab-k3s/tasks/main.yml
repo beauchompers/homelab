@@ -1,7 +1,7 @@
 ---
 - name: Install Packages
   ansible.builtin.apt:
-    name: ['iptables-persistent']
+    name: ['iptables-persistent','nfs-common']
     update_cache: yes
   retries: 2
   delay: 10

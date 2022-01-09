@@ -9,3 +9,4 @@ todo.txt
 *.crt
 elastic3.yml.j2
 *setup-berries.yml
+*prometheus.yaml

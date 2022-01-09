@@ -9,5 +9,5 @@
 - name: Create cronjob to run the netchecker script
   ansible.builtin.cron:
     name: "check network"
-    minute: "5"
+    minute: "*/5"
     job: "/usr/local/bin/netchecker.sh >> /dev/null 2>&1"

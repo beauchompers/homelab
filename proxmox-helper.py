@@ -234,7 +234,7 @@ if args.action == "start" or args.action == "stop":
 
 if args.action == "startall" and not args.quick:
     # get all nodes
-    node_ids = [ x.get("vmid") for x in all_nodes if x.get("wmid") not in ignore_nodes]
+    node_ids = [ x.get("vmid") for x in all_nodes if x.get("vmid") not in ignore_nodes]
     
     # start vms
     started_vms = start_vm(node_ids, csrf, ticket)

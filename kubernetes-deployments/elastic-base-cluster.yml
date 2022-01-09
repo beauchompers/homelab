@@ -8,7 +8,7 @@ spec:
   nodeSets:
   - name: default
     config:
-      node.roles: ["master", "data"]
+      node.roles: ["master", "data", "remote_cluster_client"]
       http.max_content_length: 250mb
       xpack.monitoring.collection.enabled: true
     podTemplate:
@@ -26,11 +26,11 @@ spec:
         - name: elasticsearch
           resources:
             limits:
-              memory: 4Gi
-              cpu: 2
+              memory: 2Gi
+              cpu: 1
           env:
           - name: ES_JAVA_OPTS
-            value: "-Xms2g -Xmx2g"
+            value: "-Xms1g -Xmx1g"
     count: 3
     volumeClaimTemplates:
       - metadata:
@@ -41,7 +41,7 @@ spec:
           storageClassName: nfs-client
           resources:
             requests:
-              storage: 30Gi
+              storage: 50Gi
   http:
     service:
       spec:

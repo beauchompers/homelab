@@ -3,7 +3,7 @@
 - name: Configuration for Debian based systems
   include_tasks: debian-config.yml
   when: 
-  - ansible_distribution == "Debian"
+  - ansible_distribution == "Debian" or ansible_distribution == "Kali"
 
 - name: Configuration for Ubuntu based systems
   include_tasks: ubuntu-config.yml

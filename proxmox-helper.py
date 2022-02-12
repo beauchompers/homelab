@@ -266,7 +266,8 @@ if args.action == "snapshot" and not args.quick:
 if args.action == "resnapshotall" and not args.quick:
     
     if not args.nodes:
-        node_ids = [ x.get("vmid") for x in all_nodes if str(x.get("vmid")) not in ignore_nodes]
+        node_ids = [ x.get("vmid") for x in all_nodes ]
+        # node_ids = [ x.get("vmid") for x in all_nodes if str(x.get("vmid")) not in ignore_nodes]
     
     # stop vms
     stopped_vms = stop_vm(node_ids, csrf, ticket)

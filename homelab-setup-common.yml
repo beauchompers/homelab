@@ -1,6 +1,6 @@
 ---
 - hosts: common
-  serial: 1
+  serial: 3
   become: yes
   tasks:
     - name: Add Common Configuration

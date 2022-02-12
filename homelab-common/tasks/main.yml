@@ -19,7 +19,7 @@
   ansible.posix.authorized_key:
     user: "{{ login_user }}"
     state: present
-    key: "{{ lookup('file', '/home/{{ local_user }}/.ssh/id_rsa.pub') }}"
+    key: "{{ lookup('file', '/{{ home_dir_path }}/{{ local_user }}/.ssh/id_rsa.pub') }}"
 
 - name: Add login_user to no password for sudo
   ansible.builtin.template:

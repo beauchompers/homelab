@@ -2,3 +2,4 @@
 # defaults file for homelab-common
 login_user: ""
 local_user: ""
+home_dir_path: ""

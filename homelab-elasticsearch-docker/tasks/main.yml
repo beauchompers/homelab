@@ -28,23 +28,23 @@
 - name: Copy .env template 
   ansible.builtin.template:
     src: env.j2
-    dest: "/home/{{ ansible_user }}/elasticsearch/.env"
+    dest: "/home/{{ login_user }}/elasticsearch/.env"
 
 - name: Run docker compose with create-certs
   ansible.builtin.command:
     cmd: "docker-compose -f create-certs.yml run --rm create_certs"
-    creates: "/home/{{ ansible_user }}/elastic.txt"
-    chdir: "/home/{{ ansible_user }}/elasticsearch"
+    creates: "/home/{{ login_user }}/elastic.txt"
+    chdir: "/home/{{ login_user }}/elasticsearch"
   when: not ansible_check_mode
 
 - name: Run docker compose to bring up Elasticsearch w/Kibana
   ansible.builtin.command:
     cmd: "docker-compose -f elastic-docker-tls.yml up -d"
-    creates: "/home/{{ ansible_user }}/elastic.txt"
-    chdir: "/home/{{ ansible_user }}/elasticsearch"
+    creates: "/home/{{ login_user }}/elastic.txt"
+    chdir: "/home/{{ login_user }}/elasticsearch"
   when: not ansible_check_mode
 
 - name: Create ES file to stop commands above
   ansible.builtin.file:
-    path: "/home/{{ ansible_user }}/elastic.txt"
+    path: "/home/{{ login_user }}/elastic.txt"
     state: touch

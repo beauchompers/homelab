@@ -1,5 +1,5 @@
 ---
-- hosts: k3s_cluster
+- hosts: berrys
   become: yes
   tasks:
     - name: Update the /etc/hosts file with node name
@@ -10,12 +10,27 @@
         state: present
         backup: yes
       when: ansible_hostname != item or ansible_hostname == item
-      with_items: "{{groups['k3s_cluster']}}"
+      with_items: "{{groups['berrys']}}"
 
-- hosts: k3s_cluster
+- hosts: berrys
   serial: 1
   become: yes
   tasks:  
+    - name: Enable container features
+      replace:
+        path: /boot/firmware/cmdline.txt
+        regexp: '^([\w](?!.*\b{{ item }}\b).*)$'
+        replace: '\1 {{ item }}'
+      register: container_features
+      with_items:
+      - "cgroup_memory=1"
+      - "cgroup_enable=memory"
+
+    - name: Reboot after above changes
+      reboot:
+        reboot_timeout: 180
+      when: container_features.changed
+
     - name: Install Docker
       import_role:
         name: homelab-containers

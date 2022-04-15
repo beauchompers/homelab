@@ -1,0 +1,18 @@
+---
+- hosts: container_registry
+  become: yes
+  tasks:
+    - name: Install Docker
+      import_role:
+        name: homelab-containers
+
+    - name: Create Container Registry
+      import_role:
+        name: homelab-container-registry
+
+- hosts: containers
+  become: yes
+  tasks:
+    - name: Install Docker
+      import_role:
+        name: homelab-containers

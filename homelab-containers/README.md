@@ -31,6 +31,8 @@ docker_compose_install: false
 docker_compose_version: "1.29.2"
 docker_compose_url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
 docker_compose_path: /usr/local/bin/docker-compose
+insecure_registry: false
+insecure_registry_name: myregistry
 
 Dependencies
 ------------

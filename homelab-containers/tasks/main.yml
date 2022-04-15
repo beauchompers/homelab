@@ -38,3 +38,7 @@
 - name: Install Docker Compose
   include_tasks: docker-compose.yml
   when: docker_compose_install|bool
+
+- name: Add Insecure Docker Registry
+  include_tasks: add-insecure-registry.yml
+  when: insecure_registry|bool

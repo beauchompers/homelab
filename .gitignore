@@ -7,6 +7,7 @@ todo.txt
 *.key
 *.pem
 *.crt
+*.cer
 elastic3.yml.j2
 *setup-berries.yml
 *prometheus.yaml

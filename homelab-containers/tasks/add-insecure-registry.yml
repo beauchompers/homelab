@@ -1,0 +1,7 @@
+---
+- name: Copy docker daemon.json file over
+  ansible.builtin.template:
+    src: daemon.j2
+    dest: "/etc/docker/daemon.json"
+  notify:
+    - restart docker

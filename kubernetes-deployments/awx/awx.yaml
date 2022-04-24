@@ -1,0 +1,13 @@
+# install awx on k3s
+# get admin password:
+# kubectl get secret awx-tower-admin-password -o jsonpath="{.data.password}" | base64 --decode
+# kubectl get pods -n 
+---
+apiVersion: awx.ansible.com/v1beta1
+kind: AWX
+metadata:
+  name: awx-tower
+  namespace: awx
+spec:
+  service_type: NodePort
+

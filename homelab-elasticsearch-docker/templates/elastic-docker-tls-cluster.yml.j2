@@ -36,6 +36,7 @@ services:
       - 9200:9200
     networks:
       - elastic
+    restart: always
       
     healthcheck:
       test: curl --cacert $CERTS_DIR/ca/ca.crt -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
@@ -78,6 +79,7 @@ services:
       - 9201:9200
     networks:
       - elastic
+    restart: always
       
   es03:
     image: docker.elastic.co/elasticsearch/elasticsearch:${VERSION}
@@ -114,6 +116,7 @@ services:
       - 9202:9200
     networks:
       - elastic
+    restart: always
 
   es04:
     image: docker.elastic.co/elasticsearch/elasticsearch:${VERSION}
@@ -155,6 +158,7 @@ services:
       - 9204:9200
     networks:
       - elastic
+    restart: always
 
   kib01:
     image: docker.elastic.co/kibana/kibana:${VERSION}
@@ -175,7 +179,8 @@ services:
     volumes: 
       - certs:$CERTS_DIR
     networks:
-      - elastic    
+      - elastic   
+    restart: always 
 volumes:
   data01:
     driver: local

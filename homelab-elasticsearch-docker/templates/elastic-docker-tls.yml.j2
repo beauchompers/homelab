@@ -32,6 +32,7 @@ services:
       - 9200:9200
     networks:
       - elastic
+    restart: always
       
     healthcheck:
       test: curl --cacert $CERTS_DIR/ca/ca.crt -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
@@ -58,7 +59,8 @@ services:
     volumes: 
       - certs:$CERTS_DIR
     networks:
-      - elastic    
+      - elastic   
+    restart: always 
 volumes:
   data01:
     driver: local

@@ -44,6 +44,54 @@
     chdir: "/home/{{ login_user }}/elasticsearch"
   when: not ansible_check_mode
 
+# - name: Get API keys
+#   ansible.builtin.uri:
+#     url: "{{ elastic_url}}/_security/api_key"
+#     method: GET
+#     validate_certs: no
+#     url_username: "elastic"
+#     url_password: "{{ elastic_password }}"
+#     headers: "Accept=application/json"
+#   register: api_keys
+#   until: not api_keys.failed|bool
+#   retries: 3
+#   delay: 120
+#   when: 
+#   - not ansible_check_mode
+#   - elastic_api_key|bool
+
+- name: Create API Key
+  ansible.builtin.uri:
+    url: "{{ elastic_url}}/_security/api_key"
+    method: POST
+    validate_certs: no
+    url_username: "{{ elastic_username }}"
+    url_password: "{{ elastic_password }}"
+    headers: "Accept=application/json"
+    body: "{{ lookup('ansible.builtin.file','{{ elastic_api_key_file_name }}') }}"
+    body_format: json
+  register: api_key
+  until: not api_key.failed|bool
+  retries: 3
+  delay: 45
+  when:
+  # - api_keys.json.api_keys | selectattr('name','equalto',api_key_name) | list | count == 0 
+  - not ansible_check_mode
+  - elastic_api_key|bool
+
+- name: Set Elastic API Key Fact
+  set_fact: es_api_key="{{ api_key.json.encoded }}"
+  when:
+  # - api_keys.json.api_keys | selectattr('name','equalto',api_key_name) | list | count == 0
+  - elastic_api_key|bool 
+
+- name: Print Elastic API Key
+  ansible.builtin.debug:
+    var: es_api_key
+  when:
+  # - api_keys.json.api_keys | selectattr('name','equalto',api_key_name) | list | count == 0
+  - elastic_api_key|bool 
+
 - name: Create ES file to stop commands above
   ansible.builtin.file:
     path: "/home/{{ login_user }}/elastic.txt"

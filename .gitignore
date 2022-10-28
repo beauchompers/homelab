@@ -12,3 +12,4 @@ elastic3.yml.j2
 *setup-berries.yml
 *prometheus.yaml
 *.DS_Store*
+xsoar*.json

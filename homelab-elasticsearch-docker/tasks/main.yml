@@ -60,7 +60,7 @@
 #   - not ansible_check_mode
 #   - elastic_api_key|bool
 
-- name: Create API Key
+- name: Create Main API Key
   ansible.builtin.uri:
     url: "{{ elastic_url}}/_security/api_key"
     method: POST
@@ -68,12 +68,12 @@
     url_username: "{{ elastic_username }}"
     url_password: "{{ elastic_password }}"
     headers: "Accept=application/json"
-    body: "{{ lookup('ansible.builtin.file','{{ elastic_api_key_file_name }}') }}"
+    body: "{{ lookup('ansible.builtin.file','xsoar-api-key.json') }}"
     body_format: json
   register: api_key
   until: not api_key.failed|bool
   retries: 3
-  delay: 45
+  delay: 90
   when:
   # - api_keys.json.api_keys | selectattr('name','equalto',api_key_name) | list | count == 0 
   - not ansible_check_mode
@@ -88,6 +88,38 @@
 - name: Print Elastic API Key
   ansible.builtin.debug:
     var: es_api_key
+  when:
+  # - api_keys.json.api_keys | selectattr('name','equalto',api_key_name) | list | count == 0
+  - elastic_api_key|bool 
+
+- name: Create Host API Key
+  ansible.builtin.uri:
+    url: "{{ elastic_url}}/_security/api_key"
+    method: POST
+    validate_certs: no
+    url_username: "{{ elastic_username }}"
+    url_password: "{{ elastic_password }}"
+    headers: "Accept=application/json"
+    body: "{{ lookup('ansible.builtin.file','xsoar-api-key-host.json') }}"
+    body_format: json
+  register: api_key2
+  until: not api_key2.failed|bool
+  retries: 3
+  delay: 90
+  when:
+  # - api_keys.json.api_keys | selectattr('name','equalto',api_key_name) | list | count == 0 
+  - not ansible_check_mode
+  - elastic_api_key|bool
+
+- name: Set Elastic API Key Fact
+  set_fact: es_api_key2="{{ api_key2.json.encoded }}"
+  when:
+  # - api_keys.json.api_keys | selectattr('name','equalto',api_key_name) | list | count == 0
+  - elastic_api_key|bool 
+
+- name: Print Host Elastic API Key
+  ansible.builtin.debug:
+    var: es_api_key2
   when:
   # - api_keys.json.api_keys | selectattr('name','equalto',api_key_name) | list | count == 0
   - elastic_api_key|bool 

@@ -19,13 +19,6 @@ instances:
       - localhost
     ip:
       - 127.0.0.1
-  
-  - name: es04
-    dns:
-      - es04
-      - localhost
-    ip:
-      - 127.0.0.1
       
   - name: 'kib01'
     dns: 

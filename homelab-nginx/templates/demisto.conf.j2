@@ -34,7 +34,9 @@ proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
 proxy_set_header        X-Forwarded-Proto $scheme;
 
 proxy_pass          https://{{ server_group }};
-proxy_read_timeout  90;
+proxy_read_timeout 300;
+proxy_connect_timeout 300;
+proxy_send_timeout 300;
 }
 
 # Note the regex prefix '^(/acc_\w+)?' is needed for multi-tenant environments

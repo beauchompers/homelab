@@ -1,0 +1,19 @@
+---
+# tasks file for homelab-splunk
+- name: Add Splunk Container
+  community.docker.docker_container:
+    name: splunk
+    image: splunk/splunk:latest
+    state: started
+    restart: true
+    ports:
+     - "8000:8000"
+    #  - "8065:8065"
+    #  - "8088:8088"
+    #  - "8089:8089"
+    #  - "8191:8181"
+    #  - "9887:9887"
+    #  - "9997:9997"
+    env:
+        SPLUNK_START_ARGS: "--accept-license"
+        SPLUNK_PASSWORD: "{{ splunk_password }}"

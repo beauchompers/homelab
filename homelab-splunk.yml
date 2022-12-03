@@ -1,0 +1,13 @@
+---        
+- hosts: splunk
+  become: yes
+  vars_files:
+    - extra-vars-splunk.yml
+  tasks:
+    - name: Setup Container Engine
+      import_role:
+        name: homelab-containers
+
+    - name: Setup Splunk
+      import_role:
+        name: homelab-splunk

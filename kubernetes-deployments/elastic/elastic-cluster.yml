@@ -26,11 +26,11 @@ spec:
         - name: elasticsearch
           resources:
             limits:
-              memory: 4Gi
-              cpu: 1
+              memory: 8Gi
+              cpu: 2
           env:
           - name: ES_JAVA_OPTS
-            value: "-Xms2g -Xmx2g"
+            value: "-Xms4g -Xmx4g"
     count: 3
     # volumeClaimTemplates:
     #   - metadata:
@@ -79,7 +79,7 @@ spec:
       - name: kibana
         resources:
           limits:
-            memory: 2Gi
+            memory: 4Gi
             cpu: 1
 
 ---

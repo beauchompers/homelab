@@ -171,12 +171,12 @@ else:
 # quick config, rollback and start the selected nodes 
 if args.quick:
     # get running nodes
-    node_ids = [ x.get("id") for x in get_running(all_nodes) if x.get("id") not in ignore_nodes]
+    # node_ids = [ x.get("id") for x in get_running(all_nodes) if x.get("id") not in ignore_nodes]
     
     # stop vms
-    stopped_vms = stop_vm(node_ids, csrf, ticket)
-    print(f"Stopped: {stopped_vms}")
-    sleep(8)
+    # stopped_vms = stop_vm(node_ids, csrf, ticket)
+    # print(f"Stopped: {stopped_vms}")
+    # sleep(8)
     
     nodes = config["QUICK_SETUPS"][args.quick].split(",")
     node_ids = [x.get("id") for x in get_node_ids(all_nodes,nodes) if x.get("id") not in ignore_nodes]
@@ -248,9 +248,9 @@ if args.action == "stopall":
 
 if args.action == "snapshot" and not args.quick:
     
-    if args.snapshot == 'BaseConfig':
-        print("Please provide a snapshot name!")
-        sys.exit()
+    # if args.snapshot == 'BaseConfig':
+    #     print("Please provide a snapshot name!")
+    #     sys.exit()
     
     if not args.nodes:
         node_ids = [ x.get("vmid") for x in all_nodes if str(x.get("vmid")) not in ignore_nodes]

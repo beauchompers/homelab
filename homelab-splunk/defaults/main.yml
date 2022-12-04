@@ -2,3 +2,6 @@
 # defaults file for homelab-splunk
 splunk_password: "changeme"
 splunk_port: "8000"
+splunk_dir: ""
+splunk_cert: ""
+splunk_key: ""

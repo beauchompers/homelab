@@ -1,5 +1,20 @@
 ---
 # tasks file for homelab-splunk
+
+- name: Create directory for certificates
+  ansible.builtin.file:
+    path: "/{{ splunk_dir }}"
+    state: directory
+    mode: 0777
+
+- name: Copy Certificate and Key
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/{{ splunk_dir }}/{{ item }}"
+  with_items:
+  - "{{ splunk_cert }}"
+  - "{{ splunk_key }}"
+
 - name: Add Splunk Container
   community.docker.docker_container:
     name: splunk
@@ -8,12 +23,18 @@
     restart: true
     ports:
      - "8000:8000"
-    #  - "8065:8065"
-    #  - "8088:8088"
-    #  - "8089:8089"
-    #  - "8191:8181"
-    #  - "9887:9887"
-    #  - "9997:9997"
+     - "8065:8065"
+     - "8088:8088"
+     - "8089:8089"
+     - "8191:8181"
+     - "9887:9887"
+     - "9997:9997"
     env:
         SPLUNK_START_ARGS: "--accept-license"
         SPLUNK_PASSWORD: "{{ splunk_password }}"
+        SPLUNK_HTTP_ENABLESSL: "true"
+        SPLUNK_HTTP_ENABLESSL_CERT: "/splunk/{{ splunk_cert }}"
+        SPLUNK_HTTP_ENABLESSL_PRIVKEY: "/splunk/{{ splunk_key }}"
+        SPLUNK_HTTP_ENABLESSL_PRIVKEY_PASSWORD: "{{ splunk_password }}"
+    volumes:
+    - "/{{ splunk_dir}}:/splunk"

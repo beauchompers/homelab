@@ -1,6 +1,6 @@
 upstream {{ server_group }} {
 ip_hash;
-{% for host in groups['xsoar_es_ha'] %}
+{% for host in groups['xsoar_es_ha_mt'] %}
 server {{host}}:443;
 {% endfor %}
 }

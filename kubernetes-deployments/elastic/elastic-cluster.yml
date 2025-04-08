@@ -4,7 +4,7 @@ kind: Elasticsearch
 metadata:
   name: elasticsearch
 spec:
-  version: 7.17.1
+  version: 8.13.1
   nodeSets:
   - name: default
     config:
@@ -21,16 +21,17 @@ spec:
         - name: sysctl
           securityContext:
             privileged: true
+            runAsUser: 0
           command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144']
         containers:
         - name: elasticsearch
           resources:
             limits:
-              memory: 8Gi
-              cpu: 2
+              memory: 2Gi
+              cpu: 1
           env:
           - name: ES_JAVA_OPTS
-            value: "-Xms4g -Xmx4g"
+            value: "-Xms1g -Xmx1g"
     count: 3
     # volumeClaimTemplates:
     #   - metadata:
@@ -59,7 +60,7 @@ kind: Kibana
 metadata:
   name: kibana
 spec:
-  version: 7.17.1
+  version: 8.13.1
   count: 1
   elasticsearchRef:
     name: "elasticsearch"
@@ -79,7 +80,7 @@ spec:
       - name: kibana
         resources:
           limits:
-            memory: 4Gi
+            memory: 1Gi
             cpu: 1
 
 ---
@@ -89,7 +90,7 @@ metadata:
   name: metricbeat
 spec:
   type: metricbeat
-  version: 7.16.2
+  version: 8.13.1
   elasticsearchRef:
     name: elasticsearch
   config:

@@ -2,8 +2,19 @@ galaxy_info:
   author: beauchompers
   description: Role to deploy common configuration on homelab servers.
   company: self
-  license: license (GPL-2.0-or-later, MIT, etc)
-  min_ansible_version: "2.10"
-  platforms: []
-  galaxy_tags: []
+  license: GPL-2.0-or-later
+  min_ansible_version: "2.20"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: EL
+      versions:
+        - all
+  galaxy_tags:
+    - homelab
+    - common
 dependencies: []

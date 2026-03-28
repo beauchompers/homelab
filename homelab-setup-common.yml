@@ -4,7 +4,7 @@
   become: yes
   tasks:
     - name: Add Common Configuration
-      import_role:
+      ansible.builtin.import_role:
         name: homelab-common
     
     - name: Shutdown VM

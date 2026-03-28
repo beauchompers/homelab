@@ -14,4 +14,5 @@ elastic3.yml.j2
 *.DS_Store*
 xsoar*.json
 .worktrees/
+.claude/
 docs/plans/

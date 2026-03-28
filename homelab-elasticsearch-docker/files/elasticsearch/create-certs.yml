@@ -1,5 +1,3 @@
-version: '2.2'
-
 services:
   create_certs:
     image: docker.elastic.co/elasticsearch/elasticsearch:${VERSION}

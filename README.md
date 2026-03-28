@@ -1,25 +1,38 @@
 # homelab
 
-Collection of Ansible Roles and helper scripts I use for my Homelab.  
+Collection of Ansible roles for my Homelab infrastructure.
+
+Requires Ansible core 2.20+ and the following collections:
+- `ansible.posix`
+- `community.docker`
 
 ## Ansible Roles
 
-The following roles are in this repo. 
-
-| Role | Description | 
+| Role | Description |
 | --- | --- |
-| homelab-common | Role to apply a common config for my VMs |
-| homelab-containers | Role to install Docker or Podman depending on the server OS |
-| homelab-elasticsearch-docker | Role to install an Elasticsearch cluster using Docker, either cluster (3), or single node |
-| homelab-nfs-client | Role to install NFS and mount a directory on the target servers | 
-| homelab-nfs-server | Role to install an NFS server to serve the above ones! |
-| homelab-nginx | Role to install an NGINX load balancer | 
+| homelab-common | Base configuration for VMs (SSH keys, sudo, packages, hostname) |
+| homelab-containers | Install Docker or Podman depending on the server OS |
+| homelab-k3s | Install and configure a K3s Kubernetes cluster |
+| homelab-container-registry | Deploy a private Docker registry with TLS |
+| homelab-nginx | Install and configure an NGINX load balancer |
+| homelab-elasticsearch-docker | Deploy an Elasticsearch cluster using Docker Compose (single or 3-node) |
+| homelab-splunk | Deploy a Splunk container with SSL/TLS support |
 
-## Scripts
+## Playbooks
 
-The following helper scripts are in here:
+| Playbook | Description |
+| --- | --- |
+| `homelab-setup-common.yml` | Apply common config and reboot |
+| `homelab-containers.yml` | Install Docker on container and registry hosts |
+| `homelab-container-engine.yml` | Install Docker on container hosts only |
+| `homelab-container-registry.yml` | Setup a private Docker registry |
+| `homelab-k3s-setup.yml` | Bootstrap a K3s cluster |
+| `homelab-elastic-setup.yml` | Deploy Elasticsearch with Docker |
+| `homelab-splunk.yml` | Deploy Splunk with Docker |
+| `homelab-gather-facts.yml` | Gather and print facts from all hosts |
 
-| Script | Description |
-| --- | --- | 
-| ```proxmox-helper.py``` | Starts, Stops, Rollback, or quickly setup the VMs I want to use with the roles etc! | 
+## Archived
 
+Retired roles and scripts are in the `archive/` directory for reference:
+- homelab-microk8s, homelab-berries, homelab-nfs-server, homelab-nfs-client
+- proxmox-helper.py, Dockerfiles

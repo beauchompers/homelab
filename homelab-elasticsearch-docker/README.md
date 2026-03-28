@@ -1,74 +1,67 @@
-Homelab Elasticsearch 
-=========
+# homelab-elasticsearch-docker
 
-Installs an Elasticsearch Cluster or Single Node using Docker on the target server. From: [Elasticsearch with Docker](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html).
+Deploys an Elasticsearch cluster (single node or 3-node) with Kibana using Docker Compose, including TLS encryption.
 
-Requirements
-------------
+## Supported Platforms
 
-Tested on Ubuntu 20.04.02 LTS
+- Ubuntu
+- Debian
 
-Role Variables
---------------
+## Requirements
 
-elastic_username: "elastic"
-- Username for the elastic cluster
+- The `homelab-containers` role should be applied first (for Docker)
+- Docker Compose v2 plugin installed (`docker_compose_install: true` on the containers role)
 
-elastic_password: "changeme"
-- Password for the elastic user
+## Role Variables
 
-cluster_type: "single | cluster"
-- Whether to create a single node cluster, or a 4 node cluster using Docker
-- Cluster is 3 nodes with all roles and one coordinating node, and kibana.
+| Variable | Default | Description |
+| --- | --- | --- |
+| `elastic_username` | `"elastic"` | Elasticsearch admin username |
+| `elastic_password` | `"changeme"` | Elasticsearch admin password |
+| `cluster_type` | `"single"` | `"single"` for one node, anything else for 3-node cluster |
+| `elastic_memory` | `"512"` | JVM heap size in MB per node (Xms/Xmx) |
+| `elastic_version` | `"7.17.1"` | Elasticsearch/Kibana version |
+| `elastic_url` | `""` | Elasticsearch URL (for API key creation) |
+| `elastic_api_key` | `false` | Whether to create API keys on startup |
+| `elastic_api_key_file_name` | `""` | JSON file defining API key privileges |
 
-elastic_memory: "512"
-- The Xms/Xmx memory for each container, increase based on your server specs
+## What It Does
 
-elastic_version: "7.17.1"
-- The version of elastic to run for each container.
+1. Sets `vm.max_map_count` sysctl for cluster mode
+2. Copies Docker Compose project files to the target
+3. Renders the appropriate Compose template (single or cluster)
+4. Generates TLS certificates using Elasticsearch's built-in certutil
+5. Brings up the Elasticsearch + Kibana stack
+6. Optionally creates API keys via the Elasticsearch REST API
 
-elastic_api_key: true | false (default is false)
-- Used when you want to create an API Key when starting the cluster
+### Cluster Topology
 
-elastic_url: "https://es01:9200"
-- The URL for an elastic node, used to create the key
+- **Single mode:** 1 Elasticsearch node + Kibana
+- **Cluster mode:** 3 Elasticsearch nodes (es01, es02, es03) + Kibana, with full TLS between nodes
 
-elastic_api_key_file_name: ""
-- The JSON file for the privleges to create the key with
-- See the elastic-api-key-example.json file for reference.
+## Example Playbook
 
-Dependencies
-------------
-
-Include the homelab-container role as a prereq for Docker.
-
-Example Playbook
-----------------
-
-```
+```yaml
 ---
-- hosts: elastic
-  become: yes
-  vars: 
-    elastic_password: "Password1"
-    cluster_type: "cluster"
-    elastic_memory: "2048"
+- name: Setup Elasticsearch with Docker
+  hosts: elastic
+  become: true
   tasks:
     - name: Install Docker
-      import_role:
+      ansible.builtin.import_role:
         name: homelab-containers
+      vars:
+        docker_compose_install: true
 
     - name: Setup Elasticsearch Node with Docker Compose
-      import_role:
+      ansible.builtin.import_role:
         name: homelab-elasticsearch-docker
+      vars:
+        elastic_password: "MySecurePassword"
+        cluster_type: "cluster"
+        elastic_memory: "2048"
 ```
 
-License
--------
-
-BSD
-
-Author Information
-------------------
+## Author
 
 Mike Beauchamp (beauchompers)

@@ -1,71 +1,52 @@
-Homelab Containers
-=========
+# homelab-containers
 
-This role installs and configures the required container engine, be it Docker or Podman depending on the OS.
+Installs and configures Docker or Podman depending on the target OS.
 
-Tested with the following Operating Systems.
+## Supported Platforms
 
-Docker:
-- Ubuntu 20.04.02 LTS
-- Debian 10 (Buster)
-- Centos 7
+**Docker:**
+- Ubuntu
+- Debian
+- CentOS 7
 - Amazon Linux 2
 
-Podman:
-- RedHat 8
-- Centos 8
+**Podman:**
+- CentOS 8+
 - Rocky Linux
 - AlmaLinux
+- RHEL 8+
 
-Requirements
-------------
+## Role Variables
 
-Docker installation uses the Docker CE repos, while Podman is from the repos for the above operating systems. 
+| Variable | Default | Description |
+| --- | --- | --- |
+| `docker_compose_install` | `false` | Install the Docker Compose v2 plugin |
+| `insecure_registry` | `false` | Configure an insecure Docker registry |
+| `insecure_registry_name` | `""` | Hostname of the insecure registry |
 
-Role Variables
---------------
+## What It Does
 
-Following variables can be defined, which allows for the installation of docker compose as well:
+1. Detects system architecture (amd64/arm64)
+2. Installs Docker CE from official Docker repos (Debian-family, CentOS 7, Amazon Linux) or Podman (RHEL 8+ family)
+3. Starts and enables the container engine service
+4. Optionally installs Docker Compose as a CLI plugin (`docker compose`)
+5. Optionally configures an insecure registry in Docker daemon config
 
-docker_compose_install: false
-docker_compose_version: "1.29.2"
-docker_compose_url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
-docker_compose_path: /usr/local/bin/docker-compose
-insecure_registry: false
-insecure_registry_name: myregistry
+## Example Playbook
 
-Dependencies
-------------
-
-None
-
-Example Playbook
-----------------
-
-Usage as per below:
-
-```
-- hosts: all
-  become: yes
-  vars:
-    docker_compose_install: true
-    docker_compose_veresion: "1.29.2"
-    docker_compose_url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
-    docker_compose_path: /usr/local/bin/docker-compose
+```yaml
+---
+- name: Install container engine
+  hosts: containers
+  become: true
   tasks:
     - name: Setup Container Engine
-      import_role:
+      ansible.builtin.import_role:
         name: homelab-containers
+      vars:
+        docker_compose_install: true
 ```
 
-
-License
--------
-
-BSD
-
-Author Information
-------------------
+## Author
 
 Mike Beauchamp (beauchompers)
-

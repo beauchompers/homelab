@@ -1,52 +1,48 @@
-Homelab - NGINX
-=========
+# homelab-nginx
 
-This role installs NGINX as a Load Balancer with the backends being a group in inventory.
+Installs NGINX and configures it as a TLS-enabled load balancer using a Jinja2 template.
 
-Requirements
-------------
+## Supported Platforms
 
-None
+- Ubuntu
+- Debian
 
-Role Variables
---------------
+## Role Variables
 
-conf_name: name of the nginx configuration template to deploy from the templates dir.
-server_group_name: backend server group in the above conf file
-server_group: ansible inventory group for the backend servers in the conf file. 
-cert_file: certificate file for nginx.
-key_file: private key for the above certificate.
+| Variable | Default | Description |
+| --- | --- | --- |
+| `conf_name` | `""` | Name of the NGINX config template (without `.j2`) to deploy |
+| `server_group_name` | `""` | Backend server group name used in the config template |
+| `server_group` | `""` | Ansible inventory group for backend servers |
+| `cert_file` | `""` | Certificate filename (placed in role's `files/` directory) |
+| `key_file` | `""` | Private key filename (placed in role's `files/` directory) |
 
-Dependencies
-------------
+## What It Does
 
-None
+1. Installs NGINX via apt
+2. Copies TLS certificate and key to `/etc/nginx/`
+3. Deploys the NGINX config from `templates/{{ conf_name }}.j2` to `/etc/nginx/conf.d/`
+4. Restarts NGINX on config or cert changes
 
-Example Playbook
-----------------
+## Example Playbook
 
-```
-- hosts: load_balancer
-  become: yes
-  vars:
-    conf_name: "demisto.conf"
-    server_group_name: "demisto"
-    server_group: "demisto_app_servers"
-    cert_file: "cert.crt"
-    key_file: "cert.key"
+```yaml
+---
+- name: Setup load balancer
+  hosts: load_balancer
+  become: true
   tasks:
     - name: Setup NGINX Load Balancer
-      import_role:
+      ansible.builtin.import_role:
         name: homelab-nginx
+      vars:
+        conf_name: "myapp.conf"
+        server_group_name: "myapp"
+        server_group: "app_servers"
+        cert_file: "cert.crt"
+        key_file: "cert.key"
 ```
 
-License
--------
-
-BSD
-
-Author Information
-------------------
+## Author
 
 Mike Beauchamp (beauchompers)
-

@@ -1,52 +1,44 @@
-Homelab Common
-=========
+# homelab-common
 
-Common configuration for homelab servers.  Installation of packages for OS and Proxmox, as well as setting up SSH and sudo access quickly. 
+Base configuration role for homelab VMs. Installs OS packages, configures SSH key access, passwordless sudo, and sets the hostname.
 
-Requirements
-------------
-None
+## Supported Platforms
 
+- Ubuntu
+- Debian / Kali
+- CentOS / Rocky / AlmaLinux / RHEL
 
-Role Variables
---------------
+## Role Variables
 
-login_user: ""
-- User to login as
+| Variable | Default | Description |
+| --- | --- | --- |
+| `login_user` | `""` | User account to configure on the target VM |
+| `local_user` | `""` | Local user whose SSH public key will be deployed |
+| `home_dir_path` | `""` | Home directory path prefix (e.g., `home` for `/home/`) |
 
-local_user: ""
-- Local user to create and add to sudoers.
+## What It Does
 
-Dependencies
-------------
+1. Installs base packages per OS (sudo, python3, qemu-guest-agent)
+2. Upgrades all packages to latest
+3. Deploys your SSH public key for `login_user`
+4. Adds `login_user` to sudoers (passwordless)
+5. Sets hostname to match inventory hostname
+6. (CentOS/Rocky) Disables firewalld, adds systemd service files for RHEL
 
-None.
+## Example Playbook
 
-Example Playbook
-----------------
-
-```
+```yaml
 ---
-- hosts: common
-  become: yes
+- name: Apply common configuration
+  hosts: common
+  serial: 4
+  become: true
   tasks:
     - name: Add Common Configuration
-      import_role:
+      ansible.builtin.import_role:
         name: homelab-common
-    
-    - name: Shutdown VM
-      ansible.builtin.command:
-        cmd: "shutdown -h +1"
-      tags:
-        - shutdown
 ```
 
-License
--------
-
-BSD
-
-Author Information
-------------------
+## Author
 
 Mike Beauchamp (beauchompers)

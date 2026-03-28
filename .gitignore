@@ -13,3 +13,5 @@ elastic3.yml.j2
 *prometheus.yaml
 *.DS_Store*
 xsoar*.json
+.worktrees/
+docs/plans/

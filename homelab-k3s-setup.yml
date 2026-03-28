@@ -3,23 +3,23 @@
   become: yes
   tasks:
     - name: Update the /etc/hosts file with node name
-      lineinfile:
-        dest: "/etc/hosts"
+      ansible.builtin.lineinfile:
+        path: "/etc/hosts"
         regexp: ".*\t{{ hostvars[item]['ansible_hostname']}}\t{{ hostvars[item]['ansible_hostname']}}"
         line: "{{ hostvars[item]['ansible_default_ipv4']['address'] }}\t{{ hostvars[item]['ansible_hostname']}}"
         state: present
         backup: yes
       when: ansible_hostname != item or ansible_hostname == item
-      with_items: "{{groups['k3s_cluster']}}"
+      with_items: "{{ groups['k3s_cluster'] }}"
 
 - hosts: k3s_cluster
   serial: 1
   become: yes
-  tasks:  
+  tasks:
     - name: Install Docker
-      import_role:
+      ansible.builtin.import_role:
         name: homelab-containers
 
     - name: Install K3s
-      import_role:
+      ansible.builtin.import_role:
         name: homelab-k3s

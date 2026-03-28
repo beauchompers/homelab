@@ -1,45 +1,48 @@
 ---
 - name: Install Packages
   ansible.builtin.apt:
-    name: ['iptables-persistent','nfs-common']
+    name: ['iptables-persistent', 'nfs-common']
     update_cache: yes
   retries: 2
   delay: 10
   when: not ansible_check_mode
 
-- name: Set IPTables 
+- name: Set IPTables
   ansible.builtin.command:
     cmd: "iptables -P FORWARD ACCEPT"
+  changed_when: false
   when: not ansible_check_mode
 
 - name: Install k3s on main node
   ansible.builtin.shell:
-    cmd: "curl -sfL https://get.k3s.io | sh -s - --docker"
+    cmd: "curl -sfL https://get.k3s.io | sh -s -"
     creates: "/usr/local/bin/k3s"
-  when: 
-  - inventory_hostname == ansible_play_hosts_all[0]
+  when:
+    - inventory_hostname == ansible_play_hosts_all[0]
 
 - name: Get cluster status
   ansible.builtin.command:
     cmd: "kubectl get node"
   register: cluster_status
-  delegate_to:  "{{ ansible_play_hosts_all[0] }}"
-  when: 
-  - inventory_hostname != ansible_play_hosts_all[0]
+  changed_when: false
+  delegate_to: "{{ ansible_play_hosts_all[0] }}"
+  when:
+    - inventory_hostname != ansible_play_hosts_all[0]
 
 - name: Get the install token
   ansible.builtin.command:
     cmd: "cat /var/lib/rancher/k3s/server/node-token"
   register: token
-  delegate_to:  "{{ ansible_play_hosts_all[0] }}"
-  when: 
-  - inventory_hostname != ansible_play_hosts_all[0]
-  - cluster_status.stdout_lines | select('search', ansible_hostname) | list | count == 0
-    
+  changed_when: false
+  delegate_to: "{{ ansible_play_hosts_all[0] }}"
+  when:
+    - inventory_hostname != ansible_play_hosts_all[0]
+    - cluster_status.stdout_lines | select('search', ansible_hostname) | list | count == 0
+
 - name: Install k3s on worker nodes
   ansible.builtin.shell:
-    cmd: "curl -sfL https://get.k3s.io | K3S_URL=https://{{ ansible_play_hosts_all[0] }}:6443 K3S_TOKEN={{ token.stdout_lines[0] }} sh -s - --docker"
+    cmd: "curl -sfL https://get.k3s.io | K3S_URL=https://{{ ansible_play_hosts_all[0] }}:6443 K3S_TOKEN={{ token.stdout_lines[0] }} sh -s -"
     creates: "/usr/local/bin/k3s"
-  when: 
-  - inventory_hostname != ansible_play_hosts_all[0]
-  - cluster_status.stdout_lines | select('search', ansible_hostname) | list | count == 0
+  when:
+    - inventory_hostname != ansible_play_hosts_all[0]
+    - cluster_status.stdout_lines | select('search', ansible_hostname) | list | count == 0

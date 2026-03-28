@@ -1,18 +1,20 @@
 ---
 - name: Setting container_engine_type fact
-  set_fact: container_engine_type="podman"
+  ansible.builtin.set_fact:
+    container_engine_type: "podman"
 
 - name: Create subuid subgid files if they don't exist
-  ansible.builtin.command: 
+  ansible.builtin.command:
     cmd: "touch /etc/subuid /etc/subgid"
   args:
     creates: /etc/subuid
 
 - name: Install container-tools module
-  ansible.builtin.command: 
+  ansible.builtin.command:
     cmd: yum -y module install container-tools
+  changed_when: false
 
-- name: Install tar depedenancy if CentOS 8
+- name: Install tar dependency if CentOS 8
   ansible.builtin.yum:
     name: ['tar']
   when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "8") or ansible_distribution == "Rocky" or ansible_distribution == "AlmaLinux"

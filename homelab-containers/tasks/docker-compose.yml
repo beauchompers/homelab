@@ -1,23 +1,11 @@
 ---
-- name: Check if docker compose is installed
-  command: "{{ docker_compose_path }} --version"
-  register: docker_compose_current_version
-  changed_when: false
-  failed_when: false
+- name: Install Docker Compose plugin
+  ansible.builtin.apt:
+    name: ['docker-compose-plugin']
+    update_cache: yes
+  when: ansible_os_family == "Debian"
 
-- name: Delete existing docker-compose version if upgrading
-  file:
-    path: "{{ docker_compose_path }}"
-    state: absent
-  when: >
-    docker_compose_current_version.stdout is defined
-    and docker_compose_version not in docker_compose_current_version.stdout
-
-- name: Install Docker Compose
-  get_url:
-    url: "{{ docker_compose_url }}"
-    dest: "{{ docker_compose_path }}"
-    mode: 0755
-  when: >
-    docker_compose_current_version.stdout is not defined
-    or docker_compose_version not in docker_compose_current_version.stdout
+- name: Install Docker Compose plugin (yum)
+  ansible.builtin.yum:
+    name: ['docker-compose-plugin']
+  when: ansible_os_family == "RedHat"

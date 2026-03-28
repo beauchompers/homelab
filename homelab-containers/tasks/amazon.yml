@@ -1,14 +1,17 @@
 ---
 - name: Setting container_engine_type fact
-  set_fact: container_engine_type="docker"
-  
-- name: Install prerequisites for Docker and Cortex XSOAR
+  ansible.builtin.set_fact:
+    container_engine_type: "docker"
+
+- name: Install prerequisites for Docker
   ansible.builtin.yum:
     name: ['device-mapper-persistent-data', 'lvm2', 'python3', 'amazon-linux-extras']
 
 - name: Install Docker on Amazon Linux 2
-  shell: amazon-linux-extras install docker -y
-  
+  ansible.builtin.shell:
+    cmd: amazon-linux-extras install docker -y
+  changed_when: false
+
 - name: Start Docker Service
   ansible.builtin.systemd:
     name: docker

@@ -1,44 +1,42 @@
 ---
-# - name: Print all available facts
-#   ansible.builtin.debug:
-#     var: ansible_facts
-
 - name: Set amd64 when architecture is x86_64
-  set_fact: repo_arch="amd64"
+  ansible.builtin.set_fact:
+    repo_arch: "amd64"
   when: ansible_architecture == "x86_64"
 
-- name: Set amd64 when architecture is aarch64
-  set_fact: repo_arch="arm64"
+- name: Set arm64 when architecture is aarch64
+  ansible.builtin.set_fact:
+    repo_arch: "arm64"
   when: ansible_architecture == "aarch64"
 
 - name: Install Docker on Ubuntu
-  include_tasks: ubuntu.yml
+  ansible.builtin.include_tasks: ubuntu.yml
   when: ansible_distribution == "Ubuntu"
 
 - name: Install Docker on Debian
-  include_tasks: ubuntu.yml
+  ansible.builtin.include_tasks: debian.yml
   when: ansible_distribution == "Debian"
 
 - name: Install Docker on CentOS 7
-  include_tasks: centos.yml
-  when: 
-  - ansible_distribution == "CentOS"
-  - ansible_distribution_major_version == "7"
+  ansible.builtin.include_tasks: centos.yml
+  when:
+    - ansible_distribution == "CentOS"
+    - ansible_distribution_major_version == "7"
 
 - name: Install Docker on Amazon Linux 2
-  include_tasks: amazon.yml
+  ansible.builtin.include_tasks: amazon.yml
   when: ansible_distribution == "Amazon"
 
 - name: Install and Configure Podman
-  include_tasks: podman.yml
-  when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "8") or 
+  ansible.builtin.include_tasks: podman.yml
+  when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "8") or
         (ansible_distribution == "Rocky" or ansible_distribution == "AlmaLinux") or
         (ansible_distribution == "RedHat" and ansible_distribution_major_version == "8")
 
-- name: Install Docker Compose
-  include_tasks: docker-compose.yml
-  when: docker_compose_install|bool
+- name: Install Docker Compose Plugin
+  ansible.builtin.include_tasks: docker-compose.yml
+  when: docker_compose_install | bool
 
 - name: Add Insecure Docker Registry
-  include_tasks: add-insecure-registry.yml
-  when: insecure_registry|bool
+  ansible.builtin.include_tasks: add-insecure-registry.yml
+  when: insecure_registry | bool

@@ -2,7 +2,7 @@
 - name: Install NGINX
   ansible.builtin.apt:
     name: ['nginx']
-    update_cache: yes
+    update_cache: true
 
 - name: Copy certificate and key over
   ansible.builtin.copy:

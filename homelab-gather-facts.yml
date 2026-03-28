@@ -1,6 +1,7 @@
 ---
-- hosts: all
-  become: yes
+- name: Gather facts from all hosts
+  hosts: all
+  become: true
   tasks:
     - name: Print all available facts
       ansible.builtin.debug:

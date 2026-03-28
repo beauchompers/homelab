@@ -1,6 +1,7 @@
 ---
-- hosts: elastic
-  become: yes
+- name: Setup Elasticsearch with Docker
+  hosts: elastic
+  become: true
   tasks:
     - name: Install Docker
       ansible.builtin.import_role:

@@ -4,7 +4,7 @@
     container_engine_type: "docker"
 
 - name: Install prerequisites for Docker
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: ['yum-utils', 'device-mapper-persistent-data', 'lvm2', 'python3']
 
 - name: Add Docker repository
@@ -14,13 +14,13 @@
     creates: /etc/yum.repos.d/docker-ce.repo
 
 - name: Install Docker CE
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: ['docker-ce', 'docker-ce-cli', 'containerd.io']
 
 - name: Start Docker Service
   ansible.builtin.systemd:
     name: docker
-    enabled: yes
-    daemon_reload: yes
+    enabled: true
+    daemon_reload: true
     state: started
   when: not ansible_check_mode

@@ -1,17 +1,17 @@
 ---
 - name: Install packages
-  ansible.builtin.yum:
-    name: ['sudo','qemu-guest-agent','python3']
+  ansible.builtin.dnf:
+    name: ['sudo', 'qemu-guest-agent', 'python3']
 
 - name: Upgrade all packages
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: '*'
     state: latest
 
 - name: Stop and disable firewalld
   ansible.builtin.systemd:
     name: firewalld
-    enabled: no
+    enabled: false
     state: stopped
 
 - name: Add very-last service
@@ -20,7 +20,7 @@
     dest: /etc/systemd/system/very-last.service
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   when: ansible_distribution == "RedHat"
 
 - name: Add very-last shell script
@@ -29,5 +29,5 @@
     dest: /usr/local/sbin/very-last
     owner: root
     group: root
-    mode: 0700
+    mode: "0700"
   when: ansible_distribution == "RedHat"

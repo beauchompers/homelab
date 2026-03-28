@@ -48,7 +48,7 @@
   ansible.builtin.uri:
     url: "{{ elastic_url }}/_security/api_key"
     method: POST
-    validate_certs: no
+    validate_certs: false
     url_username: "{{ elastic_username }}"
     url_password: "{{ elastic_password }}"
     headers: "Accept=application/json"
@@ -78,7 +78,7 @@
   ansible.builtin.uri:
     url: "{{ elastic_url }}/_security/api_key"
     method: POST
-    validate_certs: no
+    validate_certs: false
     url_username: "{{ elastic_username }}"
     url_password: "{{ elastic_password }}"
     headers: "Accept=application/json"

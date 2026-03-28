@@ -2,7 +2,7 @@
 - name: restart nginx
   ansible.builtin.systemd:
     name: nginx
-    daemon_reload: yes
+    daemon_reload: true
     state: restarted
-  when: 
-  - not ansible_check_mode
+  when:
+    - not ansible_check_mode

@@ -1,6 +1,7 @@
 ---
-- hosts: splunk
-  become: yes
+- name: Setup Splunk with Docker
+  hosts: splunk
+  become: true
   vars_files:
     - extra-vars-splunk.yml
   tasks:

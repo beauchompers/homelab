@@ -1,6 +1,7 @@
 ---
-- hosts: containers
-  become: yes
+- name: Install container engine
+  hosts: containers
+  become: true
   tasks:
     - name: Install Docker
       ansible.builtin.import_role:

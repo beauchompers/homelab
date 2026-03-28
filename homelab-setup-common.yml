@@ -1,12 +1,13 @@
 ---
-- hosts: common
+- name: Apply common configuration
+  hosts: common
   serial: 4
-  become: yes
+  become: true
   tasks:
     - name: Add Common Configuration
       ansible.builtin.import_role:
         name: homelab-common
-    
+
     - name: Shutdown VM
       ansible.builtin.command:
         cmd: "shutdown -r +1"

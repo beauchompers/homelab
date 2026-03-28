@@ -2,7 +2,7 @@
 - name: Install Packages
   ansible.builtin.apt:
     name: ['iptables-persistent', 'nfs-common']
-    update_cache: yes
+    update_cache: true
   retries: 2
   delay: 10
   when: not ansible_check_mode

@@ -1,6 +1,7 @@
 ---
-- hosts: container_registry
-  become: yes
+- name: Setup container registry host
+  hosts: container_registry
+  become: true
   tasks:
     - name: Install Docker
       ansible.builtin.import_role:
@@ -10,8 +11,9 @@
       ansible.builtin.import_role:
         name: homelab-container-registry
 
-- hosts: containers
-  become: yes
+- name: Setup container hosts
+  hosts: containers
+  become: true
   tasks:
     - name: Install Docker
       ansible.builtin.import_role:

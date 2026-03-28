@@ -2,7 +2,7 @@
 - name: Install prerequisites for Docker
   ansible.builtin.apt:
     name: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg2', 'software-properties-common', 'acl', 'python3-docker', 'python3']
-    update_cache: yes
+    update_cache: true
 
 - name: Add Docker GPG key
   ansible.builtin.apt_key:
@@ -18,13 +18,13 @@
 - name: Install Docker CE
   ansible.builtin.apt:
     name: ['docker-ce', 'docker-ce-cli', 'containerd.io']
-    update_cache: yes
+    update_cache: true
   when: not ansible_check_mode
 
 - name: Start Docker Service
   ansible.builtin.systemd:
     name: docker
-    enabled: yes
-    daemon_reload: yes
+    enabled: true
+    daemon_reload: true
     state: started
   when: not ansible_check_mode
